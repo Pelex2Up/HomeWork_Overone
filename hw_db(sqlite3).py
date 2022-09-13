@@ -46,7 +46,6 @@ for i in arr:
         continue
 
 cur.execute('''select count(*) from tab_2''')
-conn.commit()
 count = cur.fetchone()
 for i in count:
     if i > 5:
@@ -56,4 +55,4 @@ for i in count:
         cur.execute('''update tab_1 set col_1 = 'hello' where id = 1''')
         conn.commit()
 
-print(count)
+print(f'Строк во второй таблице: {count[0]}.')
