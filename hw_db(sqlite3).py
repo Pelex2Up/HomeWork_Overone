@@ -18,27 +18,29 @@ import sqlite3
 conn = sqlite3.connect('test_hw.db')
 cur = conn.cursor()
 
-cur.execute('''create table if not exists tab_1(col_1 text)''')
+cur.execute('''drop table tab_1''')
+cur.execute('''drop table tab_2''')
 conn.commit()
-cur.execute('''create table if not exists tab_2(col_1 text)''')
+cur.execute('''create table if not exists tab_1(id integer primary key autoincrement, col_1 text)''')
 conn.commit()
-cur.execute('''delete from tab_1''')
-cur.execute('''delete from tab_2''')
+cur.execute('''create table if not exists tab_2(id integer primary key autoincrement, col_1 text)''')
+conn.commit()
 
 
-arr = ['hello', 55, 'world', 206, 'string', 'NY', 148]
+
+arr = ['hi world', 55, 'world', 206, 'string', 'NY', 148]
 for i in arr:
     if type(i) == str:
-        cur.execute('''insert into tab_1 values(?)''', (i,))
+        cur.execute('''insert into tab_1(col_1)  values(?)''', (i,))
         conn.commit()
-        cur.execute('''insert into tab_2 values(?)''', (len(i),))
+        cur.execute('''insert into tab_2(col_1) values(?)''', (len(i),))
         conn.commit()
     elif type(i) == int:
         if i % 2 == 0:
-            cur.execute('''insert into tab_2 values(?)''', (i,))
+            cur.execute('''insert into tab_2(col_1) values(?)''', (i,))
             conn.commit()
         else:
-            cur.execute('''insert into tab_2 values('нечётное')''')
+            cur.execute('''insert into tab_2(col_1) values('нечётное')''')
             conn.commit()
     else:
         continue
@@ -46,4 +48,12 @@ for i in arr:
 cur.execute('''select count(*) from tab_2''')
 conn.commit()
 count = cur.fetchone()
+for i in count:
+    if i > 5:
+        cur.execute('''delete from tab_1 where id=1''')
+        conn.commit()
+    else:
+        cur.execute('''update tab_1 set col_1 = 'hello' where id = 1''')
+        conn.commit()
+
 print(count)
